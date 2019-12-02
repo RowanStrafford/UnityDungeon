@@ -17,6 +17,10 @@ public class Player : MonoBehaviour
     public Slider m_healthSlider;
     public Text m_coinText;
 
+    private float m_maxSize = 1.0f;
+    private float m_currentScale;
+    private GameObject m_currentBullet;
+
     void Start()
     {
         m_healthSlider.value = health;
@@ -53,7 +57,17 @@ public class Player : MonoBehaviour
             transform.localRotation = Quaternion.Euler(0, 0, 270);
         }
 
+        if(Input.GetMouseButtonDown(0))
+        {
+            BeginFire();
+        }
+
         if(Input.GetMouseButton(0))
+        {
+            HoldFire();
+        }
+
+        if (Input.GetMouseButtonUp(0))
         {
             Fire();
         }
@@ -61,11 +75,38 @@ public class Player : MonoBehaviour
         firerate -= Time.deltaTime;
 
 
+    }
 
+    void BeginFire()
+    {
+        m_currentBullet = Instantiate(bullet, transform.position, Quaternion.identity) as GameObject;
+
+        m_currentScale = 0.1f;
+        //m_currentBullet.transform.localScale = new Vector2(m_currentScale, m_currentScale);
+    }
+
+    void HoldFire()
+    {
+        m_currentScale += Time.deltaTime * 1.0f;
+        if(m_currentScale >= 1.0f)
+        {
+            m_currentScale = 1.0f;
+        }
+        Debug.Log(m_currentScale);
+        //m_currentBullet.transform.localScale = new Vector2(m_currentScale, m_currentScale);
     }
 
     void Fire()
     {
+        Vector2 dir = Vector3.Normalize(Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position);
+
+        GameObject obj = Instantiate(bullet, transform.position, Quaternion.identity) as GameObject;
+
+        Projectile p = obj.GetComponent<Projectile>();
+        p.SetDir(dir.x, dir.y);
+        p.SetSpeed(20);
+        p.SetScale(m_currentScale);
+        /*
         if(firerate <= 0)
         {
             Vector2 dir = Vector3.Normalize(Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position);
@@ -76,7 +117,7 @@ public class Player : MonoBehaviour
             p.SetScale(0.5f);
 
             firerate = 0.5f;
-        }
+        }*/
     }
 
     void Disable()
