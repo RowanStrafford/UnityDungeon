@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Boss1 : MonoBehaviour
 {
@@ -14,11 +15,19 @@ public class Boss1 : MonoBehaviour
     public GameObject m_coinDrop;
 
     private CircleCollider2D m_col;
+
+    public Slider m_healthSlider;
+    private bool m_fadeIn = false;
+
+    private float m_targetSliderVal;
     // Start is called before the first frame update
     void Start()
     {
         playerPos = GameObject.FindGameObjectWithTag("Player").transform;
         m_col = GetComponent<CircleCollider2D>();
+        m_healthSlider.maxValue = m_health;
+        m_healthSlider.value = m_health;
+        m_healthSlider.gameObject.SetActive(false);
         
     }
 
@@ -31,6 +40,9 @@ public class Boss1 : MonoBehaviour
             InvokeRepeating("Fire", 2.0f, 2.0f);
 
             triggered = true;
+
+            m_fadeIn = true;
+            m_healthSlider.gameObject.SetActive(true);
         }
 
         Vector3 targetPosition = playerPos.position;
@@ -38,6 +50,13 @@ public class Boss1 : MonoBehaviour
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
+        LerpSlider();
+
+    }
+
+    void LerpSlider()
+    {
+        m_healthSlider.value = Mathf.MoveTowards(m_healthSlider.value, m_health, 30.0f * Time.deltaTime);
     }
 
     void Die()
@@ -67,7 +86,8 @@ public class Boss1 : MonoBehaviour
         if(col.tag == "Projectile")
         {
             Destroy(col.gameObject);
-            m_health -= 50.0f;
+            m_health -= 30.0f;
+            m_targetSliderVal = m_health;
 
             if(m_health <= 0)
             {
