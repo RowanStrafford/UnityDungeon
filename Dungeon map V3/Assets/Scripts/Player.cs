@@ -79,9 +79,9 @@ public class Player : MonoBehaviour
 
     void BeginFire()
     {
-        m_currentBullet = Instantiate(bullet, transform.position, Quaternion.identity) as GameObject;
+        //m_currentBullet = Instantiate(bullet, transform.position, Quaternion.identity) as GameObject;
 
-        m_currentScale = 0.1f;
+        m_currentScale = 0.2f;
         //m_currentBullet.transform.localScale = new Vector2(m_currentScale, m_currentScale);
     }
 
@@ -92,7 +92,7 @@ public class Player : MonoBehaviour
         {
             m_currentScale = 1.0f;
         }
-        Debug.Log(m_currentScale);
+
         //m_currentBullet.transform.localScale = new Vector2(m_currentScale, m_currentScale);
     }
 
@@ -106,6 +106,13 @@ public class Player : MonoBehaviour
         p.SetDir(dir.x, dir.y);
         p.SetSpeed(20);
         p.SetScale(m_currentScale);
+
+       // Vector2 dir2 = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        //float lookAngle = Mathf.Atan2(dir2.y, dir2.x) * Mathf.Rad2Deg;
+        //p.SetRotation(lookAngle);
+
+        //p.FireProjectile();
+        
         /*
         if(firerate <= 0)
         {

@@ -5,12 +5,13 @@ using UnityEngine;
 public class Creature : MonoBehaviour
 {
     private float speed = 3;
+    private float normalSpeed;
     private bool woken = false;
     private GameObject targetObj;
 
     private Transform playerTransform;
     private Player playerScript;
-    private float health = 50.0f;
+    private float health = 40.0f;
 
     private float m_attackCooldown;
 
@@ -18,11 +19,11 @@ public class Creature : MonoBehaviour
 
     void Start()
     {
-        float randRad = Random.Range(1, 2.5f);
+        float randRad = Random.Range(4.5f, 6.0f);
         transform.localScale = new Vector2(randRad, randRad);
        // GetComponent<CircleCollider2D>().radius = randRad * 2;
-        speed = 3 / randRad;
-
+        normalSpeed = 3 / randRad;
+        speed = normalSpeed;
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
     }
@@ -31,7 +32,7 @@ public class Creature : MonoBehaviour
     {
         m_attackCooldown -= Time.deltaTime;
         float distance = Vector2.Distance(transform.position, playerTransform.position);
-        if(distance < 5.0f)
+        if(distance < 10.0f)
         {
             if(distance < 1.0f)
             {
@@ -49,7 +50,9 @@ public class Creature : MonoBehaviour
     {    
         if(col.tag == "Projectile")
         {
-            health -= 30.0f;
+            float damage = col.transform.localScale.x * 30.0F;
+
+            health -= damage;
             Destroy(col.gameObject);
             if(health <= 0.0f)
             {
@@ -66,6 +69,19 @@ public class Creature : MonoBehaviour
             playerScript.TakeDamage(25);
             m_attackCooldown = 3.0f;
         }
+    }
+
+    public void Freeze()
+    {
+        speed = normalSpeed / 3.0f;
+        GetComponent<SpriteRenderer>().color = new Color(0, 255, 255);
+        Invoke("Unfreeze", 5.0f);
+    }
+
+    void Unfreeze()
+    {
+        speed = normalSpeed;
+        GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
     }
 
 }
