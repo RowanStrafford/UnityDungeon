@@ -29,7 +29,7 @@ public class NPC : MonoBehaviour
 
         if (m_state == 0)
         {
-            if (distance < 5.0f)
+            if (distance < 2.0f)
             {
                 m_state = 1;
             }
