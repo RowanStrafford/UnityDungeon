@@ -51,16 +51,32 @@ public class Creature : MonoBehaviour
         if(col.tag == "Projectile")
         {
             float damage = col.transform.localScale.x * 30.0F;
-
-            health -= damage;
             Destroy(col.gameObject);
-            if(health <= 0.0f)
-            {
-                Instantiate(coinPickup, transform.position, Quaternion.identity);
-                Destroy(gameObject);
-            }
+            TakeDamageNoDelay(damage);
         }
     }
+
+    public void TakeDamageDelay(float damage)
+    {
+        health -= damage;
+
+        if (health <= 0.0f)
+        {
+            Instantiate(coinPickup, transform.position, Quaternion.identity);
+            Destroy(gameObject, 0.2f);
+        }
+    }
+
+    public void TakeDamageNoDelay(float damage)
+    {
+        health -= damage;
+
+        if (health <= 0.0f)
+        {
+            Instantiate(coinPickup, transform.position, Quaternion.identity);
+            Destroy(gameObject);
+        }
+    }   
 
     void Attack()
     {
