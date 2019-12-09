@@ -9,7 +9,6 @@ public class Projectile : MonoBehaviour
 
     float m_scale;
 
-    // Start is called before the first frame update
     void Start()
     {
 
@@ -31,11 +30,14 @@ public class Projectile : MonoBehaviour
         transform.localScale = new Vector2(m_scale, m_scale);
     }
 
-    public void SetRotation(float angle)
+    public void SetRotation(Vector2 playerPos)
     {
-        transform.rotation = Quaternion.Euler(0.0f, 0.0f, angle);
+        Vector2 direction = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - playerPos;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        Quaternion rot = Quaternion.AngleAxis(angle, Vector3.forward);
 
-        //transform.rotation = Quaternion.LookRotation(Vector3.forward, dir);
+        Debug.Log("Angle" + angle);
+        //transform.rotation = rot;
     }
 
     public void FireProjectile()
@@ -49,10 +51,12 @@ public class Projectile : MonoBehaviour
     {
         transform.Translate(dir * m_speed * Time.deltaTime);
 
-        m_scale -= 0.5f * Time.deltaTime;
+        m_scale -= 0.3f * Time.deltaTime;
         transform.localScale = new Vector2(m_scale, m_scale);
 
         if (m_scale <= 0.01f) Destroy(gameObject);
+
+       
     }
 
     void FixedUpdate()
