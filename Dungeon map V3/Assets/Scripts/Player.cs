@@ -20,11 +20,17 @@ public class Player : MonoBehaviour
     private float m_maxSize = 1.0f;
     private float m_currentScale;
     private GameObject m_currentBullet;
+    private Transform m_gunTip;
 
     void Start()
     {
         m_healthSlider.value = health;
         m_coinText.text = m_coins.ToString();
+
+        if(transform.childCount > 0)
+        {
+            m_gunTip = transform.GetChild(0);
+        }
     }
 
     void Update()
@@ -74,6 +80,10 @@ public class Player : MonoBehaviour
 
         firerate -= Time.deltaTime;
 
+        Vector2 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        Quaternion rot = Quaternion.AngleAxis(angle, Vector3.forward);
+        transform.rotation = rot;
 
     }
 
@@ -100,13 +110,13 @@ public class Player : MonoBehaviour
     {
         Vector2 dir = Vector3.Normalize(Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position);
 
-        GameObject obj = Instantiate(bullet, transform.position, Quaternion.identity) as GameObject;
+        GameObject obj = Instantiate(bullet, m_gunTip.position, Quaternion.identity) as GameObject;
 
         Projectile p = obj.GetComponent<Projectile>();
         p.SetDir(dir.x, dir.y);
         p.SetSpeed(20);
         p.SetScale(m_currentScale);
-
+        p.SetRotation(transform.position);
        // Vector2 dir2 = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
         //float lookAngle = Mathf.Atan2(dir2.y, dir2.x) * Mathf.Rad2Deg;
         //p.SetRotation(lookAngle);
