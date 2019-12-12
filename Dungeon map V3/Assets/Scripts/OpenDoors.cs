@@ -16,13 +16,23 @@ public class OpenDoors : MonoBehaviour
 
     private bool m_activate = false;
 
+    public bool vertical = false;
+
     void Start()
     {
         m_leftDoor = transform.GetChild(0).transform;
         m_rightDoor = transform.GetChild(1).transform;
 
-        m_leftDoorTarget = new Vector2(m_leftDoor.position.x - 1.0f, m_leftDoor.position.y);
-        m_rightDoorTarget = new Vector2(m_rightDoor.position.x + 1.0f, m_rightDoor.position.y);
+        if (vertical)
+        {
+            m_leftDoorTarget = new Vector2(m_leftDoor.position.x, m_leftDoor.position.y - 1.0f);
+            m_rightDoorTarget = new Vector2(m_rightDoor.position.x, m_rightDoor.position.y + 1.0f);
+        }
+        else
+        {
+            m_leftDoorTarget = new Vector2(m_leftDoor.position.x - 1.0f, m_leftDoor.position.y);
+            m_rightDoorTarget = new Vector2(m_rightDoor.position.x + 1.0f, m_rightDoor.position.y);
+        }
     }
 
     void Update()

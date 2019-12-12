@@ -6,6 +6,8 @@ public class Door : MonoBehaviour
 {
     public Transform target;
     public GameObject[] enemies;
+
+    public bool horiz = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,6 +31,7 @@ public class Door : MonoBehaviour
 
     void OpenDoor()
     {
+
         transform.position = Vector2.MoveTowards(transform.position, target.position, Time.deltaTime * 2.0f);
     }
 }
