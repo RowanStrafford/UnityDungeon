@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NPC : MonoBehaviour
 {
@@ -17,21 +18,39 @@ public class NPC : MonoBehaviour
     // 2 - Charge at enemy
     // 3 - Flee
 
+    public GameObject m_textObj;
+    private Text m_text;
+
+    private Player m_playerScript;
+
     void Start()
     {
         m_playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        m_playerScript = m_playerTransform.GetComponent<Player>();
 
+        m_text = m_textObj.transform.GetChild(0).GetComponent<Text>();
+    }
+
+    void DisableText()
+    {
+        m_textObj.SetActive(false);
     }
 
     void Update()
     {
         float distance = Vector2.Distance(transform.position, m_playerTransform.position);
 
+        // The player has approached the NPC
         if (m_state == 0)
         {
-            if (distance < 2.0f)
+            if ((distance < 2.0f) && (!m_playerScript.m_NPCChosen))
             {
+                m_textObj.SetActive(true);
+                m_text.text = "TA : A very friendly AI that throws bombs.";
                 m_state = 1;
+                Invoke("DisableText", 3.0f);
+                m_playerScript.m_NPCChosen = true;
+                m_playerScript.AddCoins(-2);
             }
         }
 
@@ -50,6 +69,7 @@ public class NPC : MonoBehaviour
             m_freezeTimer -= Time.deltaTime;
         }
 
+        // Attack an enemy, then return to following the player
         if (m_state == 2)
         {
             GameObject closestEnemy = FindNearestEnemy();
@@ -68,6 +88,7 @@ public class NPC : MonoBehaviour
        
     }
 
+    // This function finds the nearest enemy that is within 10 units. 
     GameObject FindNearestEnemy()
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -78,7 +99,9 @@ public class NPC : MonoBehaviour
         for(int i = 0; i <  enemies.Length; i++)
         {
             float distance = Vector2.Distance(transform.position, enemies[i].transform.position);
+            if (distance > 10.0f) continue;
 
+            // If the distance is less than the least distance found, then replace it (this new one is the new closest)
             if(distance < closestDist)
             {
                 closestDist = distance;

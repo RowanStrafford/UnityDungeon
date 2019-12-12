@@ -20,16 +20,19 @@ public class OpenDoors : MonoBehaviour
 
     void Start()
     {
+        // Original positions of the doors
         m_leftDoor = transform.GetChild(0).transform;
         m_rightDoor = transform.GetChild(1).transform;
 
         if (vertical)
         {
+            // Door moves vertically
             m_leftDoorTarget = new Vector2(m_leftDoor.position.x, m_leftDoor.position.y - 1.0f);
             m_rightDoorTarget = new Vector2(m_rightDoor.position.x, m_rightDoor.position.y + 1.0f);
         }
         else
         {
+            // Door moves horizontally
             m_leftDoorTarget = new Vector2(m_leftDoor.position.x - 1.0f, m_leftDoor.position.y);
             m_rightDoorTarget = new Vector2(m_rightDoor.position.x + 1.0f, m_rightDoor.position.y);
         }

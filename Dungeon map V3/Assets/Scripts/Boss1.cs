@@ -35,7 +35,7 @@ public class Boss1 : MonoBehaviour
     void Update()
     {
         float dist = Vector2.Distance(playerPos.position, transform.position);
-        if((dist < 10.0f) && (!triggered))
+        if((dist < 8.0f) && (!triggered))
         {
             InvokeRepeating("Fire", 2.0f, 2.0f);
 
@@ -45,6 +45,7 @@ public class Boss1 : MonoBehaviour
             m_healthSlider.gameObject.SetActive(true);
         }
 
+        // Boss faces player using atan2
         Vector3 targetPosition = playerPos.position;
         Vector3 dir = targetPosition - transform.position;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
@@ -61,6 +62,7 @@ public class Boss1 : MonoBehaviour
 
     void Die()
     {
+        // Spawn coins randomnly within a circle
         for(int i = 0; i < 5; i++)
         {            
             Vector2 direction = Random.insideUnitCircle.normalized;
@@ -68,17 +70,21 @@ public class Boss1 : MonoBehaviour
             Instantiate(m_coinDrop, (Vector2)transform.position + direction, Quaternion.identity);
             
         }
+
+        m_healthSlider.gameObject.SetActive(false);
         Destroy(gameObject);
     }
 
+    // Fire the projectile at the player
     void Fire()
     {
         GameObject g = Instantiate(bullet, transform.position, Quaternion.identity) as GameObject;
 
+        // Get the direction and then apply it to the projectile
         Vector2 diff = playerPos.position - transform.position;
-        Projectile p = g.GetComponent<Projectile>();
+        ProjectileBoss p = g.GetComponent<ProjectileBoss>();
         p.SetDir(diff.x, diff.y);
-        p.SetSpeed(3.0f);
+        p.SetSpeed(1.0f);
     }
 
     void OnTriggerEnter2D(Collider2D col)
@@ -89,6 +95,7 @@ public class Boss1 : MonoBehaviour
             m_health -= 30.0f;
             m_targetSliderVal = m_health;
 
+            // Kill the player when the health reaches zero
             if(m_health <= 0)
             {
                 Die();

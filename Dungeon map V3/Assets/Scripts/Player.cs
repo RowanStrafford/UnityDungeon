@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
     public float speed = 1;
 
     private int health = 100;
-    private int m_coins = 0;
+    public int m_coins = 0;
 
     public float firerate = 1.0f;
 
@@ -21,6 +22,8 @@ public class Player : MonoBehaviour
     private float m_currentScale;
     private GameObject m_currentBullet;
     private Transform m_gunTip;
+
+    public bool m_NPCChosen = false;
 
     void Start()
     {
@@ -76,6 +79,11 @@ public class Player : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             Fire();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
         }
 
         firerate -= Time.deltaTime;
@@ -157,5 +165,16 @@ public class Player : MonoBehaviour
         Debug.Log("health : " + health);
         health -= damage;
         m_healthSlider.value = health;
+
+        if(health <= 0)
+        {
+            SceneManager.LoadScene(0);
+        }
+    }
+
+    public void AddCoins(int coinsToAdd)
+    {
+        m_coins += coinsToAdd;
+        m_coinText.text = m_coins.ToString();
     }
 }

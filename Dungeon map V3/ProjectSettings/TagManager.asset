@@ -7,6 +7,7 @@ TagManager:
   - CoinPickup
   - Projectile
   - Enemy
+  - BossProjectile
   layers:
   - Default
   - TransparentFX

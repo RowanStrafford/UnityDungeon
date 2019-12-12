@@ -19,9 +19,11 @@ public class Creature : MonoBehaviour
 
     void Start()
     {
+        // Set random size of the enemy for variation
         float randRad = Random.Range(4.5f, 6.0f);
+
+        // set speed of enemy relative to the size
         transform.localScale = new Vector2(randRad, randRad);
-       // GetComponent<CircleCollider2D>().radius = randRad * 2;
         normalSpeed = 3 / randRad;
         speed = normalSpeed;
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
@@ -34,6 +36,7 @@ public class Creature : MonoBehaviour
         float distance = Vector2.Distance(transform.position, playerTransform.position);
         if(distance < 10.0f)
         {
+            // If the enemy is within distance, attack, otherwise move towards player
             if(distance < 1.0f)
             {
                 Attack();
@@ -56,6 +59,7 @@ public class Creature : MonoBehaviour
         }
     }
 
+    // A short delay on the removing of the entity is here, to allow the explosion to fully mask the removal
     public void TakeDamageDelay(float damage)
     {
         health -= damage;

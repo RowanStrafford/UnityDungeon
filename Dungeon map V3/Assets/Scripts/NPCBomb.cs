@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NPCBomb : MonoBehaviour
 {
@@ -18,12 +19,24 @@ public class NPCBomb : MonoBehaviour
     // 1 - Following
     // 2 - Charge at enemy
     // 3 - Flee
+    public GameObject m_textObj;
+    private Text m_text;
+
+    private Player m_playerScript;
 
     void Start()
     {
         m_playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        m_playerScript = m_playerTransform.GetComponent<Player>();
 
+        m_text = m_textObj.transform.GetChild(0).GetComponent<Text>();
     }
+
+    void DisableText()
+    {
+        m_textObj.SetActive(false);
+    }
+
 
     void Update()
     {
@@ -31,8 +44,15 @@ public class NPCBomb : MonoBehaviour
 
         if (m_state == 0)
         {
-            if (distance < 2.0f)
+            // If the player is within the distance of the NPC, activate it
+            if ((distance < 2.0f) && (!m_playerScript.m_NPCChosen))
             {
+                m_textObj.SetActive(true);
+                m_text.text = "Johny Boris : A moderetaly friendly AI that throws bombs.";
+                Invoke("DisableText", 3.0f);
+
+                m_playerScript.m_NPCChosen = true;
+                m_playerScript.AddCoins(-3);
                 m_state = 1;
             }
         }
