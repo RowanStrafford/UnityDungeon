@@ -158,6 +158,11 @@ public class Player : MonoBehaviour
             m_coinText.text = m_coins.ToString();
             Destroy(col.gameObject);
         }
+
+        if(col.tag == "BossProjectile")
+        {
+            TakeDamage(25);
+        }
     }
 
     public void TakeDamage(int damage)

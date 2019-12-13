@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Creature : MonoBehaviour
 {
-    private float speed = 3;
+    private float speed = 5;
     private float normalSpeed;
     private bool woken = false;
     private GameObject targetObj;
@@ -24,7 +24,7 @@ public class Creature : MonoBehaviour
 
         // set speed of enemy relative to the size
         transform.localScale = new Vector2(randRad, randRad);
-        normalSpeed = 3 / randRad;
+        normalSpeed = 5 / randRad;
         speed = normalSpeed;
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();

@@ -72,44 +72,75 @@ public class NPC : MonoBehaviour
         // Attack an enemy, then return to following the player
         if (m_state == 2)
         {
-            GameObject closestEnemy = FindNearestEnemy();
-            transform.position = Vector2.MoveTowards(transform.position, closestEnemy.transform.position, Time.deltaTime * m_moveSpeed * 2);
-
-            if (Vector2.Distance(transform.position, closestEnemy.transform.position) < 0.5f)
+           // GameObject closestEnemy = FindNearestEnemy();
+            Transform newPos = FindNearestEnemy();
+            if(newPos.position == transform.position)
             {
-                m_freezeTimer = 10.0f;
-                AttackEnemy(closestEnemy);
+                Debug.Log("No enemies in this room");
                 m_state = 1;
             }
-        }
+            else
+            {
+                transform.position = Vector2.MoveTowards(transform.position, newPos.position, Time.deltaTime * m_moveSpeed * 2);
 
-      
-
-       
+                if (Vector2.Distance(transform.position, newPos.position) < 0.5f)
+                {
+                    m_freezeTimer = 10.0f;
+                    AttackEnemy(newPos.gameObject);
+                    m_state = 1;
+                }
+            }            
+        }       
     }
 
+    // //This function finds the nearest enemy that is within 10 units.
+    //GameObject FindNearestEnemy()
+    //{
+
+    //    GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+    //    float closestDist = 10000.0f;
+    //    int closestIndex = 10;
+
+    //    for (int i = 0; i < enemies.Length; i++)
+    //    {
+    //        float distance = Vector2.Distance(transform.position, enemies[i].transform.position);
+
+    //        //If the distance is less than the least distance found, then replace it(this new one is the new closest)
+    //        if (distance < closestDist)
+    //        {
+    //            closestDist = distance;
+    //            closestIndex = i;
+    //        }
+    //    }
+
+    //    return enemies[closestIndex];
+    //}
+
     // This function finds the nearest enemy that is within 10 units. 
-    GameObject FindNearestEnemy()
+    Transform FindNearestEnemy()
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
 
         float closestDist = 10000.0f;
-        int closestIndex = 0;
+        int closestIndex = 10;
 
-        for(int i = 0; i <  enemies.Length; i++)
+        for (int i = 0; i < enemies.Length; i++)
         {
-            float distance = Vector2.Distance(transform.position, enemies[i].transform.position);
-            if (distance > 10.0f) continue;
+            float distance = Vector2.Distance(transform.position, enemies[i].transform.position);           
+
+            if(distance > 10.0f) continue;            
 
             // If the distance is less than the least distance found, then replace it (this new one is the new closest)
-            if(distance < closestDist)
+            if (distance < closestDist)
             {
                 closestDist = distance;
                 closestIndex = i;
             }
         }
 
-        return enemies[closestIndex];
+        if (closestDist == 10000.0f) return transform;        
+        else return enemies[closestIndex].transform;        
     }
 
     void AttackEnemy(GameObject enemy)

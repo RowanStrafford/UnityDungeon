@@ -74,10 +74,10 @@ public class NPCBomb : MonoBehaviour
 
         if (m_state == 2)
         {
-            Vector2 closestEnemy = FindNearestBombSpot();
-            transform.position = Vector2.MoveTowards(transform.position, closestEnemy, Time.deltaTime * m_moveSpeed * 2);
+            Transform closestEnemy = FindNearestEnemy();
+            transform.position = Vector2.MoveTowards(transform.position, closestEnemy.position, Time.deltaTime * m_moveSpeed * 2);
 
-            if (Vector2.Distance(transform.position, closestEnemy) < 0.5f)
+            if (Vector2.Distance(transform.position, closestEnemy.position) < 0.5f)
             {
                 m_freezeTimer = 10.0f;
                 PlaceBomb();
@@ -86,20 +86,45 @@ public class NPCBomb : MonoBehaviour
         }
     }
 
-    Vector2 FindNearestBombSpot()
+    //Vector2 FindNearestBombSpot()
+    //{
+    //    GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+    //    Vector2 posSum = Vector2.zero;
+
+    //    for (int i = 0; i < enemies.Length; i++)
+    //    {
+    //        posSum += (Vector2)enemies[i].transform.position;
+    //    }
+
+    //    posSum /= enemies.Length;
+
+    //    return posSum;
+    //}
+
+    Transform FindNearestEnemy()
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
 
-        Vector2 posSum = Vector2.zero;
+        float closestDist = 10000.0f;
+        int closestIndex = 10;
 
         for (int i = 0; i < enemies.Length; i++)
         {
-            posSum += (Vector2)enemies[i].transform.position;
+            float distance = Vector2.Distance(transform.position, enemies[i].transform.position);
+
+            if (distance > 10.0f) continue;
+
+            // If the distance is less than the least distance found, then replace it (this new one is the new closest)
+            if (distance < closestDist)
+            {
+                closestDist = distance;
+                closestIndex = i;
+            }
         }
 
-        posSum /= enemies.Length;
-
-        return posSum;
+        if (closestDist == 10000.0f) return transform;
+        else return enemies[closestIndex].transform;
     }
 
     void PlaceBomb()
